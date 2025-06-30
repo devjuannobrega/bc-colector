@@ -1,8 +1,8 @@
 package org.example.view;
 
 import org.example.services.ApiConsultaService;
-import org.example.services.ZplViewer;
 import org.example.services.ImpressoraService;
+import org.example.services.ZplViewer;
 import org.example.utils.ApiParser;
 
 import javax.swing.*;
@@ -13,9 +13,9 @@ public class TelaPrincipal extends JFrame {
     private JTextField campoChave;
     private JComboBox<String> portaCombo;
 
-    public TelaPrincipal() {
+    public TelaPrincipal(boolean isMaster) {
         setTitle("BC Collector - Impressão e Consulta de Etiqueta");
-        setSize(500, 300);
+        setSize(500, 350);
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -69,6 +69,14 @@ public class TelaPrincipal extends JFrame {
                 JOptionPane.showMessageDialog(this, "Informe uma chave válida.");
             }
         });
+
+        // Se for master, exibe o botão de gerenciamento
+        if (isMaster) {
+            JButton gerenciarBtn = new JButton("Gerenciar Usuários");
+            gerenciarBtn.setBounds(150, 150, 180, 30);
+            gerenciarBtn.addActionListener(e -> new TelaUsuarios());
+            add(gerenciarBtn);
+        }
 
         setVisible(true);
     }
