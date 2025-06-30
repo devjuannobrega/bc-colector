@@ -34,15 +34,15 @@ public class TelaLogin extends JFrame {
     }
 
     private void autenticar() {
-        String usuario = campoUsuario.getText();
+        String nome = campoUsuario.getText();
         String senha = new String(campoSenha.getPassword());
 
         // Aqui valida direto no banco MySQL via LoginService
-        boolean isAutenticado = LoginService.autenticar(usuario, senha);
+        boolean isAutenticado = LoginService.autenticar(nome, senha);
         boolean isMaster = false;
 
         if (isAutenticado) {
-            isMaster = UsuarioService.isMaster(usuario,senha); // só verifica se login for válido
+            isMaster = UsuarioService.isMaster(nome,senha);
             dispose(); // Fecha a tela de login
             new TelaPrincipal(isMaster); // Passa true se for master
         } else {

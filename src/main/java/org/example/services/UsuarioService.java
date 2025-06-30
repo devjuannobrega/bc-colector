@@ -29,12 +29,12 @@ public class UsuarioService {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                Usuario u = new Usuario();
-                u.setId(rs.getInt("id"));
-                u.setUsuario(rs.getString("usuario"));
-                u.setSenha(rs.getString("senha"));
-                u.setMaster(rs.getBoolean("is_master"));
-                return u;
+                return new Usuario(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("senha"),
+                        rs.getBoolean("isMaster")
+                );
             }
         } catch (Exception e) {
             System.out.println("Erro ao buscar usuário: " + e.getMessage());
@@ -56,21 +56,24 @@ public class UsuarioService {
         }
     }
 
+
+    //os usuarios masters não funcionam para o botão de gerenciar usuarios, apenas esse
     public static boolean isMaster(String nome, String senha) {
-        return nome.equals("bc-producao") && senha.equals("Bcf123");
+        return nome.equals("juan") && senha.equals("123");
     }
 
     public static List<Usuario> listarUsuarios() {
         List<Usuario> lista = new ArrayList<>();
         try (Connection conn = Banco.conectar()) {
-            String sql = "SELECT id, usuario, senha, is_master FROM usuarios";
+            String sql = "SELECT id, nome, senha, isMaster FROM usuarios";
             ResultSet rs = conn.createStatement().executeQuery(sql);
             while (rs.next()) {
-                Usuario u = new Usuario();
-                u.setId(rs.getInt("id"));
-                u.setUsuario(rs.getString("usuario"));
-                u.setSenha(rs.getString("senha"));
-                u.setMaster(rs.getBoolean("is_master"));
+                Usuario u = new Usuario(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("senha"),
+                        rs.getBoolean("isMaster")
+                );
                 lista.add(u);
             }
         } catch (Exception e) {
@@ -79,15 +82,15 @@ public class UsuarioService {
         return lista;
     }
 
-
-    public static boolean adicionarUsuario(String nome, String senha) {
+    // ✅ Correção: Adicionado suporte ao parâmetro boolean isMaster
+    public static boolean adicionarUsuario(String nome, String senha, boolean isMaster) {
         try (Connection conn = Banco.conectar()) {
             PreparedStatement stmt = conn.prepareStatement(
-                    "INSERT INTO usuarios (usuario, senha, is_master) VALUES (?, ?, ?)"
+                    "INSERT INTO usuarios (nome, senha, isMaster) VALUES (?, ?, ?)"
             );
             stmt.setString(1, nome);
             stmt.setString(2, senha);
-            stmt.setBoolean(3, false); // ou true, se for usuário master
+            stmt.setBoolean(3, isMaster);
             stmt.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -96,14 +99,17 @@ public class UsuarioService {
         }
     }
 
-
+    // 🛠️ Correção: coluna correta é 'usuario', não 'nome'
     public static boolean atualizarSenha(String nome, String novaSenha) {
         try (Connection conn = Banco.conectar()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE usuarios SET senha = ? WHERE nome = ?");
+            PreparedStatement stmt = conn.prepareStatement(
+                    "UPDATE usuarios SET senha = ? WHERE nome = ?"
+            );
             stmt.setString(1, novaSenha);
             stmt.setString(2, nome);
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
+            System.out.println("Erro ao atualizar senha: " + e.getMessage());
             return false;
         }
     }
@@ -111,7 +117,7 @@ public class UsuarioService {
     public static boolean excluirUsuario(String nome) {
         try (Connection conn = Banco.conectar()) {
             PreparedStatement stmt = conn.prepareStatement(
-                    "DELETE FROM usuarios WHERE usuario = ?"
+                    "DELETE FROM usuarios WHERE nome = ?"
             );
             stmt.setString(1, nome);
             stmt.executeUpdate();
@@ -124,17 +130,16 @@ public class UsuarioService {
 
     public static Usuario buscarPorUsuario(String nome) {
         try (Connection conn = Banco.conectar()) {
-            String sql = "SELECT * FROM usuarios WHERE usuario = ?";
+            String sql = "SELECT * FROM usuarios WHERE nome = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, nome);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 return new Usuario(
                         rs.getInt("id"),
-                        rs.getString("usuario"),
+                        rs.getString("nome"),
                         rs.getString("senha"),
-                        rs.getBoolean("is_master")
+                        rs.getBoolean("isMaster")
                 );
             }
         } catch (Exception e) {

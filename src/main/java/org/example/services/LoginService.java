@@ -8,7 +8,7 @@ import org.example.data.Banco;
 public class LoginService {
 
     public static boolean autenticar(String usuario, String senha) {
-        String sql = "SELECT COUNT(*) FROM usuarios WHERE usuario = ? AND senha = ?";
+        String sql = "SELECT COUNT(*) FROM usuarios WHERE nome = ? AND senha = ?";
 
         try (Connection conn = Banco.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

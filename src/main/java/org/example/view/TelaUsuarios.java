@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+import static org.example.services.UsuarioService.isMaster;
+
 public class TelaUsuarios extends JFrame {
 
     private JList<String> listaUsuarios = new JList<>();
@@ -34,7 +36,10 @@ public class TelaUsuarios extends JFrame {
             String senha = JOptionPane.showInputDialog(this, "Senha:");
             if (senha == null || senha.trim().isEmpty()) return;
 
-            if (UsuarioService.adicionarUsuario(nome.trim(), senha.trim())) {
+            int resposta = JOptionPane.showConfirmDialog(this, "Este usuário é master?", "Tipo de usuário", JOptionPane.YES_NO_OPTION);
+            boolean isMaster = (resposta == JOptionPane.YES_OPTION);
+
+            if (UsuarioService.adicionarUsuario(nome.trim(), senha.trim(),isMaster)) {
                 JOptionPane.showMessageDialog(this, "Usuário adicionado com sucesso!");
                 atualizarLista();
             } else {
