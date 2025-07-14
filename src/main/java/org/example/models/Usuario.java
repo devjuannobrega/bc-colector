@@ -6,8 +6,6 @@ public class Usuario {
     private String senha;
     private boolean isMaster;
 
-    public Usuario() {}
-
     public Usuario(int id, String usuario, String senha, boolean isMaster) {
         this.id = id;
         this.usuario = usuario;

@@ -2,6 +2,8 @@ package org.example.view;
 
 import org.example.services.UsuarioService;
 import org.example.services.LoginService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.lang.String.*;
 
 import javax.swing.*;
@@ -37,8 +39,10 @@ public class TelaLogin extends JFrame {
         String nome = campoUsuario.getText();
         String senha = new String(campoSenha.getPassword());
 
+        final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         // Aqui valida direto no banco MySQL via LoginService
-        boolean isAutenticado = LoginService.autenticar(nome, senha);
+        boolean isAutenticado = LoginService.autenticar(nome,senha);
         boolean isMaster = false;
 
         if (isAutenticado) {

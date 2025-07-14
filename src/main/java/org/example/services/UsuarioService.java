@@ -82,7 +82,6 @@ public class UsuarioService {
         return lista;
     }
 
-    // ✅ Correção: Adicionado suporte ao parâmetro boolean isMaster
     public static boolean adicionarUsuario(String nome, String senha, boolean isMaster) {
         try (Connection conn = Banco.conectar()) {
             PreparedStatement stmt = conn.prepareStatement(
