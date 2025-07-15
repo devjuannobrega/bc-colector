@@ -8,12 +8,15 @@ import java.util.Base64;
 
 public class ApiConsultaService {
 
-    public static String consultar(String chave) {
-        try {
-            String apiUrl = System.getenv("API_URL");
-            String user = System.getenv("API_USER");
-            String pass = System.getenv("API_PASS");
 
+
+    static String apiUrl = System.getenv("API_URL");
+    static String user = System.getenv("API_USER");
+    static String pass = System.getenv("API_PASS");
+
+    public static String consultar(String chave) {
+
+        try {
             if (apiUrl == null || user == null || pass == null) {
                 return "Variáveis de ambiente não definidas.";
             }
@@ -33,9 +36,15 @@ public class ApiConsultaService {
             }
             in.close();
             return response.toString();
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return "Erro ao consultar a API: " + e.getMessage();
         }
+    }
+
+    private void exibirVar(String apiUrl, String user, String pass) {
+        System.out.println(apiUrl);
+        System.out.println(user);
+        System.out.println(pass);
     }
 }
